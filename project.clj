@@ -1,4 +1,6 @@
 (defproject hierarchical-color "0.1.0-SNAPSHOT"
+  :description "Hierarchical color range generator for Phyramid's service categories."
+  :author "vladh"
   :url "http://github.com/vladh/hierarchical-color"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
