@@ -1,6 +1,5 @@
 (ns hierarchical-color.core
   (:require [clojure.math.numeric-tower :refer [floor]]
-            [clojure.walk :refer :all]
             [com.evocomputing.colors :refer :all])
   (:gen-class))
 
@@ -11,15 +10,18 @@
                           (:content     (:marketing) (:creation))))
 
 (defn format-color [hue]
-  (let [color (create-color {:h hue :s 70 :l 70})]
+  (let [color (create-color {:h hue :s 80 :l 65})]
     (rgb-hexstr color)))
 
 (defn make-color-ranges [node color-range]
-  (if (next node)
-      (let [partition-size (floor (/ (count color-range) (count (rest node))))
-            pairs (map vector (rest node) (partition partition-size color-range))]
-        (cons (list (first node) (map format-color color-range)) (map (partial apply make-color-ranges) pairs)))
-      (list (first node) (map format-color color-range))))
+  (let [formatted-color-range (map format-color color-range)
+        new-node (list (first node) formatted-color-range)]
+    (if (next node)
+        (let [partition-size (floor (/ (count color-range) (count (rest node))))
+              pairs (map vector (rest node) (partition partition-size color-range))]
+          (cons new-node (map (partial apply make-color-ranges) pairs)))
+        new-node)))
 
 (defn -main [& args]
-  (doall (map println (make-color-ranges services (range 0 361)))))
+  (let [color-ranges (make-color-ranges services (range 0 361 4))]
+    (doseq [category color-ranges] (doseq [item category] (println item)))))
